@@ -1,19 +1,9 @@
-"use client"
-import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Spotlight } from "@/components/ui/spotlight";
-import {
-  Navbar,
-  NavBody,
-  NavItems,
-  MobileNav,
-  NavbarButton,
-  MobileNavHeader,
-  MobileNavToggle,
-  MobileNavMenu,
-} from "@/components/ui/resizable-navbar";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import { Button } from "@/components/ui/moving-border";
+import Link from "next/link";
+import CustomNavbar from "@/components/customNavbar";
 export default function SpotlightPreview() {
   const words = [
     {
@@ -33,84 +23,11 @@ export default function SpotlightPreview() {
       className: "text-blue-500 dark:text-blue-500",
     },
   ];
-  const navItems = [
-    {
-      name: "Features",
-      link: "#features",
-    },
-    {
-      name: "About us",
-      link: "#pricing",
-    },
-    {
-      name: "Contact",
-      link: "#contact",
-    },
-  ];
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
 
   return (
     <div className="relative flex flex-col h-[40rem] w-full overflow-hidden rounded-md bg-black/[0.96] antialiased md:items-center md:justify-center">
-      <div className="fixed top-0 z-100 p-5">
-    <div className="relative w-full">
-      <Navbar>
-        {/* Desktop Navigation */}
-        <NavBody>
-          <span className="font-bold">BCCD</span>
-          <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
-            <NavbarButton variant="primary">Book a call</NavbarButton>
-          </div>
-        </NavBody>
- 
-        {/* Mobile Navigation */}
-        <MobileNav>
-          <MobileNavHeader>
-          <span className="font-bold">BCCD</span>
-            <MobileNavToggle
-              isOpen={isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            />
-          </MobileNavHeader>
- 
-          <MobileNavMenu
-            isOpen={isMobileMenuOpen}
-            onClose={() => setIsMobileMenuOpen(false)}
-          >
-            {navItems.map((item, idx) => (
-              <a
-                key={`mobile-link-${idx}`}
-                href={item.link}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
-              >
-                <span className="block">{item.name}</span>
-              </a>
-            ))}
-            <div className="flex w-full flex-col gap-4">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Login
-              </NavbarButton>
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Book a call
-              </NavbarButton>
-            </div>
-          </MobileNavMenu>
-        </MobileNav>
-      </Navbar>
-      
- 
-      {/* Navbar */}
-    </div>
-      </div>
+      <CustomNavbar/>
       <div
         className={cn(
           "pointer-events-none absolute inset-0 [background-size:40px_40px] select-none",
@@ -135,12 +52,13 @@ export default function SpotlightPreview() {
         </p>
       </div>
       <div>
+        <Link href={'/labs/auth/signup'}>
         <Button
         borderRadius="1.75rem"
         className="bg-white dark:bg-slate-900 text-black dark:text-white border-neutral-200 dark:border-slate-800"
       >
         Get Started
-      </Button>
+      </Button></Link>
       </div>
     </div>
   );

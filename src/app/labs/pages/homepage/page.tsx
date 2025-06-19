@@ -1,0 +1,26 @@
+"use client";
+import React, { useState } from "react";
+import { FileUpload } from "@/components/ui/file-upload";
+const Homepage = () => {
+    const [files, setFiles] = useState<File[]>([]);
+    const handleFileUpload = (files: File[]) => {
+        setFiles(files);
+        console.log(files);
+    };
+    return (
+        <div>
+            <div className='text-2xl p-5 px-4 md:text-2xl lg:text-2xl font-bold text-neutral-700 dark:text-white max-w-2xl leading-relaxed lg:leading-snug text-center mx-auto'>
+                Detect blood cancer early, accurately, and effortlessly with our AI-powered detection system <br />
+                built to support modern laboratories and ensure better patient care.
+            </div>
+            <div className="w-screen max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+
+                <div className="p-5 ">
+                    <FileUpload onChange={handleFileUpload} />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default Homepage
