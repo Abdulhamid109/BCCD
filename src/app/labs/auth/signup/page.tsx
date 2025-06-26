@@ -1,16 +1,65 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
-
+interface labdata {
+  labname:string;
+  email: string;
+  password: string;
+  address:string;
+}
 export default function SignupFormDemo() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [message, setMessage] = useState<string>();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    const [disable, setDisable] = useState<boolean>(false);
+    const router = useRouter();
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+    setDisable(true);
+
     e.preventDefault();
+    try {
+    
+          const response = await axios.post('/api/auth/signup', data);
+          if (response.status === 200) {
+            setMessage("Successfully account created...");
+            router.push('/labs/auth/login');
+            toast.success('Successfully account created...');
+          } else if (response.status === 404) {
+            setMessage('Account already exists');
+          }else{
+            setMessage(response.data.message);
+          }
+          console.log("Form submitted");
+        } catch (error) {
+          console.log('error ', error);
+          
+          setError("Something went wrong! Try again.");
+        } finally {
+          setLoading(false);
+          setDisable(false);
+        }
     console.log("Form submitted");
   };
+  const [data, setdata] = useState<labdata>({
+      email: "",
+      password: "",
+      labname:"",
+      address:""
+    });
+
+  const handlechange = (event:React.ChangeEvent<HTMLInputElement>)=>{
+    const { name, value } = event.target;
+    setdata(values => ({ ...values, [name]: value }));
+  }
   return (
     <div className="shadow-input top-10 relative hover:bg-gradient-to-tl from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]  dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] mx-auto h-[80%] w-full max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-black">
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
@@ -20,37 +69,46 @@ export default function SignupFormDemo() {
         Signup to BCCD 
       </p>
 
-      <form className="my-8" onSubmit={handleSubmit}>
-        <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
+      <form className="my-8 " onSubmit={handleSubmit} >
+        <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 ">
           <LabelInputContainer>
             <Label htmlFor="Name">Name</Label>
-            <Input id="Name" placeholder="Tyler" type="text" />
+            <Input id="Name" placeholder="Tyler" type="text" name="labname" value={data.labname || ""} onChange={handlechange}/>
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address of Laboratory</Label>
-          <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
+          <Input id="email" placeholder="projectmayhem@fc.com" type="email" name="email" value={data.email} onChange={handlechange}/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" placeholder="••••••••" type="password" />
+          <Input id="password" name="password" placeholder="••••••••" type="password" value={data.password} onChange={handlechange}/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="address">Address</Label>
           <Input
             id="address"
+            name="address"
             placeholder="Enter your address"
             type="text"
+            value={data.address}
+            onChange={handlechange}
           />
         </LabelInputContainer>
 
         <button
           className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
           type="submit"
+          disabled={disable}
         >
-          Sign up &rarr;
+          {loading ?"processing...":"Sign up "}
           <BottomGradient />
         </button>
+
+        {message && <p className='text-green-400 mt-4 font-medium animate-fade-in'>{message}</p>}
+        {error && <p className='text-red-400 mt-4 font-medium animate-fade-in'>{error}</p>}
+
+
         <div className="text-sm font-light tracking-tight text-center text-zinc-400 p-4">
             Already have an account ? <Link className="text-blue-600 underline" href={'/labs/auth/login'}>Login</Link>
         </div>
